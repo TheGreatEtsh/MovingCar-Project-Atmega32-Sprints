@@ -149,7 +149,8 @@ en_timerError_t TIMER_pwmGenerator(u8 u8_a_timerUsed, u32 u32_a_desiredDutyCycle
 		u8_g_normalToPwm = 1;
 		u16_g_onTime		= ((u32_a_desiredDutyCycle * 256)/100);
 		u16_g_offTime	= 256 - u16_g_onTime;
-		DIO_init(PORT_D, 2, OUTPUT);
+		DIO_init(PORT_D, 4, OUTPUT);
+		DIO_init(PORT_D, 5, OUTPUT);
 		if (flag == 0)
 		{
 			TCNT0 = 256 - u16_g_onTime;
@@ -282,7 +283,8 @@ ISR(TIMER0_OVF)
 		static u8 u8_gs_generatorState = 0;
 		if (u8_gs_generatorState)
 		{
-			DIO_write(PORT_D,2,LOW);
+			DIO_write(PORT_D,4,LOW);
+			DIO_write(PORT_D,5,LOW);
 			TCNT0 = 256 - u16_g_offTime;
 			if (u16_g_offTime < 256)
 			{
@@ -291,7 +293,8 @@ ISR(TIMER0_OVF)
 		}
 		else
 		{
-			DIO_write(PORT_D,2, HIGH);
+			DIO_write(PORT_D,4, HIGH);
+			DIO_write(PORT_D,5, HIGH);
 			TCNT0 = 256 - u16_g_onTime;
 			if (u16_g_onTime < 256)
 			{

@@ -11,14 +11,14 @@
 
 #include "../../MCAL/dio/dio.h"
 
-#define LED_0_PORT		PORT_A
-#define LED_1_PORT		PORT_A
-#define LED_2_PORT		PORT_A
-#define LED_3_PORT		PORT_A
-#define LED_0_PIN		0
-#define LED_1_PIN		1
-#define LED_2_PIN		2
-#define LED_3_PIN		3
+#define LED_0_PORT		PORT_B
+#define LED_1_PORT		PORT_B
+#define LED_2_PORT		PORT_B
+#define LED_3_PORT		PORT_B
+#define LED_0_PIN		4
+#define LED_1_PIN		5
+#define LED_2_PIN		6
+#define LED_3_PIN		7
 
 typedef enum ledErrors{
 	LED_OK,

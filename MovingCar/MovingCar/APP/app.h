@@ -19,5 +19,5 @@ void APP_initModules(void);
 void APP_superLoop (void);
 void APP_carMoveForward(void);
 void APP_carTurnRight(void);
-
+void APP_testingMotors(void);
 #endif /* APP_H_ */

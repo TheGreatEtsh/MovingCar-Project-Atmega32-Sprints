@@ -13,10 +13,10 @@
 #include "../../MCAL/pwm/pwm.h"
 #include "../../MCAL/timer/timer.h"
 
+#define NUMBER_OF_MOTORS	2
 #define MOTOR_0				0
 #define MOTOR_1				1
-#define MOTOR_2				2
-#define MOTOR_3				3
+
 
 #define CW					0
 #define ACW					1
