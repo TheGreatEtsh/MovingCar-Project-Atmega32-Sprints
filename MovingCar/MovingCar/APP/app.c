@@ -64,7 +64,7 @@ void APP_superLoop (void)
 				BUTTON_read(BUTTON_0_PORT, BUTTON_0_Pin, &button0State);
 				
 				TIMER_start(TIMER_2);	
-				MOTOR_start();
+				//MOTOR_start();
 				while(button0State)
 				{
 					BUTTON_read(BUTTON_0_PORT, BUTTON_0_Pin, &button0State);
