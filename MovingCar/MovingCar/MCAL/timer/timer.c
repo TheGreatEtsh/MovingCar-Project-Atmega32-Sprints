@@ -256,6 +256,12 @@ en_timerError_t TIMER_stop(u8 u8_a_timerUsed)
 	
 	if (u8_a_timerUsed == TIMER_0)
 	{
+		if (u8_g_normalToPwm)
+		{
+			DIO_write(PORT_D,4, LOW);
+			DIO_write(PORT_D,5, LOW);
+			
+		}
 		CLR_BIT(TCCR0, CS02);	CLR_BIT(TCCR0, CS01);	CLR_BIT(TCCR0, CS00);
 	}
 	else if (u8_a_timerUsed == TIMER_1)
