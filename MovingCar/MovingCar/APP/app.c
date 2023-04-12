@@ -6,16 +6,26 @@
  */ 
 
 #include "app.h"
-#define MOVING_FORWARD_TIME				6
-#define STOP_0_TIME						1
-#define STOP_1_TIME						1
-#define MOVING_RIGHT_TIME				4
-#define TURNING_TIME					2
+//#define MOVING_FORWARD_TIME				6
+//#define STOP_0_TIME						1
+//#define STOP_1_TIME						1
+//#define MOVING_RIGHT_TIME				4
+//#define TURNING_TIME					2
 
 u8 u8_g_tickNumber	=	0;
 u8 u8_g_FirstEntery	=	0;
+float f32_g_timeRequired = 0;
+u32 u32_g_turningTime		= 0;
+
 void APP_initModules(void)
 {
+	float distanceToRotate = 0;
+	float rpmToSpeed = 0;
+	distanceToRotate = (float) DISTANCE_BETWEEN_WHEELS/2 * PI/2;
+	rpmToSpeed = (float )WHEEL_DIAMETER / 100 * PI * MAX_SPEED * DUTY_CYCLE_USED ;
+	f32_g_timeRequired = distanceToRotate / rpmToSpeed * 60;
+	u32_g_turningTime = f32_g_timeRequired * 1000 / 500;
+	
 	MOTOR_init();
 	
 	BUTTON_init(BUTTON_0_PORT, BUTTON_0_Pin);
@@ -35,6 +45,7 @@ void APP_initModules(void)
 	
 	EXTINT_setCallBackInt(INT_2, APP_button1Task);
 	
+	
 }
 
 
@@ -51,8 +62,8 @@ void APP_superLoop (void)
 			if(button0State)
 			{
 				BUTTON_read(BUTTON_0_PORT, BUTTON_0_Pin, &button0State);
-				TIMER_enableInterrupt(TIMER_2);
-				TIMER_start(TIMER_2);
+				
+				TIMER_start(TIMER_2);	
 				MOTOR_start();
 				while(button0State)
 				{
@@ -105,7 +116,7 @@ void APP_carTurnRight(void)
 {
 	MOTOR_setDirection(MOTOR_0, CW);
 	MOTOR_setDirection(MOTOR_1, ACW);
-	MOTOR_speed(60);
+	MOTOR_speed(DUTY_CYCLE_USED);
 	MOTOR_start();
 	LED_on(LED_2_PORT, LED_2_PIN);
 	LED_off(LED_3_PORT, LED_3_PIN);
@@ -140,13 +151,21 @@ void APP_sysTickTask(void)
 {
 	if (u8_g_FirstEntery == 0)	
 	{
-		u8_g_FirstEntery = 1;
+		u8_g_FirstEntery = 2;
 		TIMER_stopInterrupt(TIMER_2);
 		TIMER_delay(TIMER_2, 1000);
 		TIMER_enableInterrupt(TIMER_2);
 	}
+	else if (u8_g_FirstEntery == 1)
+	{
+		u8_g_FirstEntery = 2;
+		TIMER_stopInterrupt(TIMER_2);
+		TIMER_delay(TIMER_2, 1000);
+		TIMER_enableInterrupt(TIMER_2);
+
+	}
 		
-	if (u8_g_tickNumber < MOVING_FORWARD_TIME)
+	if (u8_g_tickNumber < STATE_0)
 	{
 		u8_g_tickNumber++;
 		APP_carMoveForward();
@@ -156,37 +175,37 @@ void APP_sysTickTask(void)
 		APP_carStop();
 		u8_g_tickNumber++;
 	}
-	else if (u8_g_tickNumber >= STATE_1 && u8_g_tickNumber < STATE_2)
+	else if (u8_g_tickNumber >= STATE_1 && u8_g_tickNumber < STATE_2 + u32_g_turningTime)
 	{
 		APP_carTurnRight();
 		u8_g_tickNumber++;
 	}
-	else if (u8_g_tickNumber >=  STATE_2 && u8_g_tickNumber < STATE_3)
+	else if (u8_g_tickNumber >=  STATE_2 + u32_g_turningTime && u8_g_tickNumber < STATE_3+ u32_g_turningTime)
 	{
 		APP_carStop();
 		u8_g_tickNumber++;
 	}
-	else if (u8_g_tickNumber >=  STATE_3 && u8_g_tickNumber < STATE_4)
+	else if (u8_g_tickNumber >=  STATE_3 + u32_g_turningTime && u8_g_tickNumber < STATE_4 + u32_g_turningTime)
 	{
 		u8_g_tickNumber++;
 		APP_carMoveRight();
 	}
-	else if (u8_g_tickNumber >= STATE_4 && u8_g_tickNumber < STATE_5)
+	else if (u8_g_tickNumber >= STATE_4 + u32_g_turningTime && u8_g_tickNumber < STATE_5 + u32_g_turningTime)
 	{
 		APP_carStop();
 		u8_g_tickNumber++;
 	}
-	else if (u8_g_tickNumber >=  STATE_5 && u8_g_tickNumber < STATE_6)
+	else if (u8_g_tickNumber >=  STATE_5 + u32_g_turningTime && u8_g_tickNumber < u32_g_turningTime + STATE_6 + u32_g_turningTime)
 	{
 		APP_carTurnRight();
 		u8_g_tickNumber++;
 	}
-	else if (u8_g_tickNumber >=  STATE_6 && u8_g_tickNumber < STATE_7)
+	else if (u8_g_tickNumber >=  STATE_6 + u32_g_turningTime + u32_g_turningTime && u8_g_tickNumber < STATE_7 + u32_g_turningTime + u32_g_turningTime)
 	{
 		APP_carStop();
 		u8_g_tickNumber++;
 		
-		if (u8_g_tickNumber >= STATE_7)
+		if (u8_g_tickNumber >= STATE_7 + u32_g_turningTime + u32_g_turningTime)
 		{
 			u8_g_tickNumber = 0;
 		}
@@ -197,14 +216,14 @@ void APP_sysTickTask(void)
 	
 void APP_button1Task(void)
 {
-	u8_g_FirstEntery = 0;
+	u8_g_FirstEntery = 1;
 	
 	MOTOR_stop();
 	LED_off(LED_1_PORT, LED_1_PIN);
 	LED_off(LED_3_PORT, LED_3_PIN);
 	LED_off(LED_2_PORT, LED_2_PIN);
 	LED_off(LED_0_PORT, LED_0_PIN);
-	//TIMER_stop(TIMER_2);
-	TIMER_stopInterrupt(TIMER_2);
+	TIMER_stop(TIMER_2);
+	u8_g_tickNumber = 0;
 	
 }
