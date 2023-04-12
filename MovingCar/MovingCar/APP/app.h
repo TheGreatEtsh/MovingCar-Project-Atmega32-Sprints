@@ -10,10 +10,14 @@
 #define APP_H_
 
 #define F_CPU 16000000ul
-#define MOVING_FORWARD_TIME				6
-#define STOP_0_TIME						1
-#define STOP_1_TIME						1
-#define MOVING_RIGHT_TIME				4
+
+#define TICK_TIME						100
+
+#define MOVING_FORWARD_TIME				(3000/TICK_TIME)
+#define STOP_0_TIME						(500/TICK_TIME)
+#define STOP_1_TIME						(500/TICK_TIME)
+#define MOVING_RIGHT_TIME				(2000/TICK_TIME)
+
 #define STATE_0							MOVING_FORWARD_TIME 
 #define STATE_1							(STOP_0_TIME + MOVING_FORWARD_TIME)
 #define STATE_2							(STOP_0_TIME + MOVING_FORWARD_TIME )

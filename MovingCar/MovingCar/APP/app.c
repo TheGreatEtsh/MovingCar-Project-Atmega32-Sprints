@@ -6,11 +6,6 @@
  */ 
 
 #include "app.h"
-//#define MOVING_FORWARD_TIME				6
-//#define STOP_0_TIME						1
-//#define STOP_1_TIME						1
-//#define MOVING_RIGHT_TIME				4
-//#define TURNING_TIME					2
 
 u8 u8_g_tickNumber	=	0;
 u8 u8_g_FirstEntery	=	0;
@@ -24,7 +19,7 @@ void APP_initModules(void)
 	distanceToRotate = (float) DISTANCE_BETWEEN_WHEELS/2 * PI/2;
 	rpmToSpeed = (float )WHEEL_DIAMETER / 100 * PI * MAX_SPEED * DUTY_CYCLE_USED ;
 	f32_g_timeRequired = distanceToRotate / rpmToSpeed * 60;
-	u32_g_turningTime = f32_g_timeRequired * 1000 / 500;
+	u32_g_turningTime = f32_g_timeRequired * 1000 / TICK_TIME;
 	
 	MOTOR_init();
 	
@@ -37,7 +32,7 @@ void APP_initModules(void)
 	
 	TIMER_init(TIMER_2);
 	
-	TIMER_setTime(TIMER_2, 500);
+	TIMER_setTime(TIMER_2, TICK_TIME);
 	
 	TIMER_setCallBack(TIMER_2, APP_sysTickTask);
 	
@@ -64,7 +59,7 @@ void APP_superLoop (void)
 				BUTTON_read(BUTTON_0_PORT, BUTTON_0_Pin, &button0State);
 				
 				TIMER_start(TIMER_2);	
-				//MOTOR_start();
+				
 				while(button0State)
 				{
 					BUTTON_read(BUTTON_0_PORT, BUTTON_0_Pin, &button0State);
