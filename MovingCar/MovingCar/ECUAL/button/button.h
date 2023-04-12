@@ -10,10 +10,10 @@
 #define BUTTON_H_
 #include "../../MCAL/dio/dio.h"
 
-#define BUTTON_0_PORT	PORT_B
-#define BUTTON_0_Pin	2
-#define BUTTON_1_PORT	PORT_C
-#define BUTTON_1_Pin	4
+#define BUTTON_0_PORT	PORT_C
+#define BUTTON_0_Pin	4
+#define BUTTON_1_PORT	PORT_B
+#define BUTTON_1_Pin	2
 
 typedef enum buttonErrors{
 	BUTTON_OK,

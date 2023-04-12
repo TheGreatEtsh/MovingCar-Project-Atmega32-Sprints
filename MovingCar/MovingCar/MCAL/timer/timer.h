@@ -42,7 +42,7 @@
 /*****************************************_TIMER_MODE_USED_***************************************/
 
 #define TIMER_0_MODE							OV_TIMER
-#define TIMER_1_MODE
+#define TIMER_1_MODE							OV_TIMER
 #define TIMER_2_MODE							OV_TIMER
 /*****************************************_PRESCALER_USED_***************************************/
 #define TIMER_0_PRESCALER						PRESCLNG_256
@@ -68,6 +68,10 @@ en_timerError_t TIMER_start(u8 u8_a_timerUsed);
 en_timerError_t TIMER_stop(u8 u8_a_timerUsed);
 en_timerError_t TIMER_pwmGenerator(u8 u8_a_timerUsed, u32 u32_a_desiredDutyCycle);
 void			TIMER_setCallBack(u8 u8_a_timerUsed, void (*funPtr)(void));
+en_timerError_t	TIMER_stopInterrupt(u8 u8_a_timerUsed);
+en_timerError_t TIMER_delay(u8 u8_a_timerUsed, u32 u32_a_timeInMS);
+en_timerError_t	TIMER_enableInterrupt(u8 u8_a_timerUsed);
+
 
 
 

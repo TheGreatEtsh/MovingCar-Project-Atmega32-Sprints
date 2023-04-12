@@ -199,9 +199,9 @@ en_timerError_t TIMER_start(u8 u8_a_timerUsed)
 		#elif		TIMER_2_PRESCALER	==		PRESCLNG_8
 		CLR_BIT(TCCR2,CS22); SET_BIT(TCCR2,CS21);	CLR_BIT(TCCR2,CS20);
 		#elif		TIMER_2_PRESCALER	==		PRESCLNG_64
-		CLR_BIT(TCCR2,CS22); SET_BIT(TCCR2,CS21);	SET_BIT(TCCR2,CS20);
+		SET_BIT(TCCR2,CS22); CLR_BIT(TCCR2,CS21);	CLR_BIT(TCCR2,CS20);
 		#elif		TIMER_2_PRESCALER	==		PRESCLNG_256
-		SET_BIT(TCCR2,CS22); CLR_BIT(TCCR2,CS21);	SET_BIT(TCCR2,CS20);
+		SET_BIT(TCCR2,CS22); SET_BIT(TCCR2,CS21);	CLR_BIT(TCCR2,CS20);
 		#elif		TIMER_2_PRESCALER	==		PRESCLNG_1024
 		SET_BIT(TCCR2,CS22); SET_BIT(TCCR2,CS21);	SET_BIT(TCCR2,CS20);
 		#endif
@@ -257,7 +257,111 @@ void TIMER_setCallBack(u8 u8_a_timerUsed, void (*funPtr)(void))
 	}
 }
 
+en_timerError_t	TIMER_stopInterrupt(u8 u8_a_timerUsed)
+{
+	en_timerError_t en_a_error;
+	
+	if (u8_a_timerUsed == TIMER_0)
+	{
+		CLR_BIT(TIMSK,TOIE0);
+		CLR_BIT(TIMSK,OCIE0);
+	}
+	else if (u8_a_timerUsed == TIMER_1)
+	{
+		
+	}
+	else if (u8_a_timerUsed == TIMER_2)
+	{
+		CLR_BIT(TIMSK,TOIE2);
+		CLR_BIT(TIMSK,OCIE2);
+	}
+	else
+	{
+		en_a_error = WRONG_TIMER_USED;
+	}
+	return en_a_error;
+}
 
+en_timerError_t	TIMER_enableInterrupt(u8 u8_a_timerUsed)
+{
+	en_timerError_t en_a_error;
+	
+	if (u8_a_timerUsed == TIMER_0)
+	{
+		#if		TIMER_0_MODE		==		OV_TIMER
+		SET_BIT(TIMSK,TOIE0);
+		#elif	TIMER_0_MODE		==	CTC_TIMER
+		SET_BIT(TIMSK,OCIE0);
+		#endif
+	}
+	else if (u8_a_timerUsed == TIMER_1)
+	{
+		
+	}
+	else if (u8_a_timerUsed == TIMER_2)
+	{
+		#if		TIMER_2_MODE		==		OV_TIMER
+		SET_BIT(TIMSK,TOIE2);
+		#elif	TIMER_2_MODE		==		CTC_TIMER
+		SET_BIT(TIMSK,OCIE2);
+		#endif
+	}
+	else
+	{
+		en_a_error = WRONG_TIMER_USED;
+	}
+	return en_a_error;
+}
+
+en_timerError_t TIMER_delay(u8 u8_a_timerUsed, u32 u32_a_timeInMS)
+{
+	en_timerError_t en_a_error;
+	
+	if (u8_a_timerUsed == TIMER_0)
+	{
+
+	}
+	else if (u8_a_timerUsed == TIMER_1)
+	{
+		
+	}
+	else if (u8_a_timerUsed == TIMER_2)
+	{
+		TCNT2 = 0x00;
+		
+		u32 tickTime = TIMER_0_PRESCALER / XTAL_FREQ;
+		u32 numberOfTicks = ((u32_a_timeInMS*1000)/tickTime);
+		u32 numberOfOverflows = numberOfTicks / 256;
+		u8 numberOfRemTicks	= numberOfTicks % 256;
+		
+		if (numberOfRemTicks)
+		{
+			TCNT2 = 256 - numberOfRemTicks;
+			numberOfOverflows++;
+		}
+		
+		u32 overflowCounter = 0;
+
+		while(overflowCounter < numberOfOverflows)		
+		{
+			while(GET_BIT(TIFR, TOV2) == 0);
+			
+			SET_BIT(TIFR, TOV2);
+			
+			overflowCounter++;
+		}
+		
+		overflowCounter = 0;
+		
+		TCNT2 = 0x00;
+	}
+	else
+	{
+		en_a_error = WRONG_TIMER_USED;
+	}
+	return en_a_error;
+	
+}
 
 #if			TIMER_0_MODE		==		OV_TIMER
 ISR(TIMER0_OVF)
@@ -321,3 +425,20 @@ ISR(TIMER0_COMP)
 	}
 }
 #endif
+
+ISR(TIMER2_OVF)
+{		
+		static u32 OVFCounter = 0;
+		OVFCounter  ++;
+		if (OVFCounter  == u32_g_timer2NumberOfOVFs)
+		{
+			if(TIMER_2_callBack != nullPtr)
+			{
+				TIMER_2_callBack();
+			}
+			OVFCounter  =	0;
+			TCNT0 = 256 - u8_g_timer2RemTicks;
+			
+		}
+
+}

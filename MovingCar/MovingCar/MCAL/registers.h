@@ -74,6 +74,16 @@ typedef enum{
 
 #define OCR0		(*((volatile u8*)0x5C))
 
+#define TIFR		(*((volatile u8*)0x58))
+#define OCF2		bit7
+#define TOV2		bit6
+#define ICF1		bit5
+#define OCF1A		bit4
+#define OCF1B		bit3
+#define TOV1		bit2
+#define OVF0		bit1
+#define TOV0		bit0
+
 /********************************_TIMER1_REGISTERS_**********************************/
 #define ICR1		(*((volatile u16*)0x46))
 #define ICR1L		(*((volatile u8*)0x46))
