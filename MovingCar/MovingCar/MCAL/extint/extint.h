@@ -75,7 +75,7 @@ typedef enum extintError{
  *	OPTION 2	->		INT_1
  *	OPTION 3	->		INT_2
  */
-en_extintError_t EXTINT_Init (u8 u8_a_intNumber);
+en_extintError_t EXTINT_init (u8 u8_a_intNumber);
 
 void EXTINT_setCallBackInt (u8 u8_a_intNumber, void (*funPtr) (void));
 

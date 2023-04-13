@@ -10,7 +10,7 @@ void (*EXTINT_0_callBack) (void) = nullPtr;
 void (*EXTINT_1_callBack) (void) = nullPtr;
 void (*EXTINT_2_callBack) (void) = nullPtr;
 
-en_extintError_t EXTINT_Init (u8 u8_a_intNumber)
+en_extintError_t EXTINT_init (u8 u8_a_intNumber)
 {
 	en_extintError_t en_a_error =EXTINT_OK;
 	/* Step 1	->		Choose Sense Control */

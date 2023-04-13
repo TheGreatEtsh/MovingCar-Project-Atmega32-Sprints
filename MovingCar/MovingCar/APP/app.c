@@ -7,16 +7,18 @@
 
 #include "app.h"
 
-u8 u8_g_tickNumber	=	0;
-u8 u8_g_FirstEntery	=	0;
-float f32_g_timeRequired = 0;
-u32 u32_g_turningTime		= 0;
+u8 u8_g_tickNumber			=	0;
+u8 u8_g_FirstEntery			=	0;
+f32 f32_g_timeRequired		=	0;
+u32 u32_g_turningTime		=	0;
 
 void APP_initModules(void)
 {
-	float distanceToRotate = 0;
-	float rpmToSpeed = 0;
+	f32 distanceToRotate = 0;
+	f32 rpmToSpeed = 0;
 	distanceToRotate = (float) DISTANCE_BETWEEN_WHEELS/2 * PI/2;
+	
+	/* Perimeter of the circle * Max Speed * Duty Cycle*/
 	rpmToSpeed = (float )WHEEL_DIAMETER / 100 * PI * MAX_SPEED * DUTY_CYCLE_USED ;
 	f32_g_timeRequired = distanceToRotate / rpmToSpeed * 60;
 	u32_g_turningTime = f32_g_timeRequired * 1000 / TICK_TIME;
@@ -36,7 +38,7 @@ void APP_initModules(void)
 	
 	TIMER_setCallBack(TIMER_2, APP_sysTickTask);
 	
-	EXTINT_Init(INT_2);
+	EXTINT_init(INT_2);
 	
 	EXTINT_setCallBackInt(INT_2, APP_button1Task);
 	
@@ -123,7 +125,7 @@ void APP_carMoveRight(void)
 {
 	MOTOR_setDirection(MOTOR_0, CW);
 	MOTOR_setDirection(MOTOR_1, CW);
-	MOTOR_speed(20);
+	MOTOR_speed(30);
 	MOTOR_start();
 
 	
