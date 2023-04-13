@@ -48,7 +48,10 @@ void MOTOR_setDirection		(u8 u8_a_motorNumber, u8 u8_a_direction)
 
 void MOTOR_speed			(u8 u8_a_speed)
 {	
-	TIMER_pwmGenerator(TIMER_0, u8_a_speed);
+	if (u8_a_speed <= 100)	
+	{
+		TIMER_pwmGenerator(TIMER_0, u8_a_speed);
+	}
 }
 
 
