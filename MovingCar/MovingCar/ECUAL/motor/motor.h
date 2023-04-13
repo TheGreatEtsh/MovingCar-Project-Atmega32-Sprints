@@ -10,7 +10,6 @@
 #define MOTOR_H_
 
 #include "../../MCAL/dio/dio.h"
-#include "../../MCAL/pwm/pwm.h"
 #include "../../MCAL/timer/timer.h"
 
 #define NUMBER_OF_MOTORS	2
